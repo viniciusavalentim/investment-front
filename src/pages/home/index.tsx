@@ -12,6 +12,7 @@ export function Home() {
                 </Button>
             </div>
             <div>
+                
                 {/* Aqui vai ficar a tabela  */}
                 <div className="w-[500px] h-[300px] border border-zinc-800"></div>
             </div>
