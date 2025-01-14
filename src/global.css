@@ -115,4 +115,16 @@
         @apply bg-black;
       }
 }
-  
+
+
+::-webkit-scrollbar{
+  width: 7px;
+}
+
+::-webkit-scrollbar:horizontal{
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-violet-700 rounded-md
+}
