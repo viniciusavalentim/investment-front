@@ -1,3 +1,4 @@
+import { FindLatestStocks } from "@/api/find-last-stocks";
 import { FindStocks, StockInfo } from "@/api/find-stocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,12 @@ export function Home() {
     const [isQueryStarted, setIsQueryStarted] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false); */
 
+    const { data: findLatestStock } = useQuery({
+        queryKey: ['findLatestStocks'],
+        queryFn: FindLatestStocks,
+    });
+
+
 
     const { data: findStocksResult, refetch } = useQuery({
         queryKey: ['findStocks'],
@@ -32,21 +39,21 @@ export function Home() {
     const handleSearch = (term: string) => {
         setSearchTerm(term);
         if (!term) {
-            if (findStocksResult) {
-                setFilteredData(findStocksResult.info);
+            if (findLatestStock) {
+                setFilteredData(findLatestStock.data);
                 return;
             } else {
                 toast.error("ação não encontrada");
             }
         }
 
-        if (!findStocksResult?.info) {
+        if (!findLatestStock?.data) {
             toast.error("ação não encontrada");
             return;
         }
 
         const lowerTerm = term.toLowerCase();
-        const filtered = findStocksResult.info.filter((stock) =>
+        const filtered = findLatestStock.data.filter((stock) =>
             stock.tag.toLowerCase().includes(lowerTerm)
         );
         setFilteredData(filtered);
@@ -57,38 +64,38 @@ export function Home() {
         refetch();
     };
 
-   /*  useEffect(() => {
-        let timer: NodeJS.Timeout;
-        let startTime: number;
-
-        const animate = (timestamp: number) => {
-            if (!startTime) startTime = timestamp;
-            const elapsedTime = (timestamp - startTime) / 1000;
-
-            if (elapsedTime <= TOTAL_DURATION) {
-                const newProgress = (elapsedTime / TOTAL_DURATION) * 100;
-                setProgress(newProgress);
-
-                if (!isQueryStarted && elapsedTime >= TOTAL_DURATION - QUERY_DURATION) {
-                    setIsQueryStarted(true);
-                    refetch();
-                }
-
-                requestAnimationFrame(animate);
-            } else {
-                setProgress(100);
-                setIsCompleted(true);
-            }
-        };
-
-        requestAnimationFrame(animate);
-
-        return () => {
-            if (timer) {
-                clearTimeout(timer);
-            }
-        };
-    }, [refetch]); */
+    /*  useEffect(() => {
+         let timer: NodeJS.Timeout;
+         let startTime: number;
+ 
+         const animate = (timestamp: number) => {
+             if (!startTime) startTime = timestamp;
+             const elapsedTime = (timestamp - startTime) / 1000;
+ 
+             if (elapsedTime <= TOTAL_DURATION) {
+                 const newProgress = (elapsedTime / TOTAL_DURATION) * 100;
+                 setProgress(newProgress);
+ 
+                 if (!isQueryStarted && elapsedTime >= TOTAL_DURATION - QUERY_DURATION) {
+                     setIsQueryStarted(true);
+                     refetch();
+                 }
+ 
+                 requestAnimationFrame(animate);
+             } else {
+                 setProgress(100);
+                 setIsCompleted(true);
+             }
+         };
+ 
+         requestAnimationFrame(animate);
+ 
+         return () => {
+             if (timer) {
+                 clearTimeout(timer);
+             }
+         };
+     }, [refetch]); */
 
     return (
         <div className="flex items-center justify-center flex-col space-y-6 mt-24">
@@ -151,8 +158,8 @@ export function Home() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData.length > 0 ? (
-                            formatApiResponse(filteredData).map((stock, index) => {
+                        {findLatestStock && findLatestStock.data && findLatestStock.data.length > 0 ? (
+                            formatApiResponse(findLatestStock.data).map((stock, index) => {
                                 const dividendYieldKey = `DIVIDEND_YIELD_-_${stock.tag}`;
                                 const dividendYield = stock.indicators[dividendYieldKey] || "N/A";
 

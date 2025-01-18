@@ -2,6 +2,9 @@ import { StockInfo } from "@/api/find-stocks";
 
 
 export function formatApiResponse(data: StockInfo[]): StockInfo[] {
+
+    console.log(data);
+
     // 1. Calcular os pontos para 'pontos_roic'
     const dataWithRoicPoints = [...data].map((item) => {
         const roic = parseFloat(item.indicators.ROIC.replace('%', '').trim());
