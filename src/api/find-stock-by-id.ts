@@ -16,7 +16,7 @@ export type StockInfo = {
 };
 
 export type ApiResponse = {
-    latestStock: stock;
+    stock: stock;
 };
 
 export type stock = {
@@ -26,7 +26,7 @@ export type stock = {
 };
 
 
-export async function FindLatestStocks() {
-    const response = await api.get<ApiResponse>("/latest-stock");
-    return response.data.latestStock;
+export async function FindStockById({ id }: { id: string }) {
+    const response = await api.get<ApiResponse>(`/stock/${id}`);
+    return response.data;
 }

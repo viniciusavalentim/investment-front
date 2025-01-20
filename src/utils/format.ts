@@ -9,16 +9,15 @@ export function formatApiResponse(data: StockInfo[]): StockInfo[] {
     const dataWithRoicPoints = [...data].map((item) => {
         const roic = parseFloat(item.indicators.ROIC.replace('%', '').trim());
         return { ...item, roic };
-    }).sort((a, b) => a.roic - b.roic)
+    }).sort((a, b) => b.roic - a.roic)
         .map((item, index) => ({ ...item, pontos_roic: index + 1 }));
-
 
     // 2. Calcular os pontos para 'pontos_ey'
     const dataWithEyPoints = dataWithRoicPoints.map(item => {
         const evEbit = parseFloat(item.indicators["EV/EBIT"]);
         const ey = 1 / evEbit * 100;
         return { ...item, ey };
-    }).sort((a, b) => a.ey - b.ey)
+    }).sort((a, b) => b.ey - a.ey)
         .map((item, index) => ({ ...item, pontos_ey: index + 1 }));
 
     // 3. Calcular os pontos para 'pontos_preco'

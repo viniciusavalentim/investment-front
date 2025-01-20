@@ -16,12 +16,17 @@ export type StockInfo = {
 };
 
 export type ApiResponse = {
-    id: string;
+    stocks: stock[];
+};
+
+export type stock = {
+    _id: string;
     data: StockInfo[];
+    createdAt: string;
 };
 
 
-export async function FindStocks() {
+export async function FindAllStocks() {
     const response = await api.get<ApiResponse>("/stocks");
     return response.data;
 }
