@@ -59,6 +59,7 @@ module.exports = {
 			},
 			animation: {
 				spin360: 'spin360 0.3s linear',
+				"spin-slow": "spin 3s linear infinite",
 			},
 		}
 	},
