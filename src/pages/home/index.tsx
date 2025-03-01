@@ -167,7 +167,7 @@ export function Home() {
                 </Button>
             </div>
 
-            <div className="w-full px-6 lg:px-24 py-6">
+            <div className="w-full px-3 lg:px-24 py-6">
                 <div className="relative my-6">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                         <Search className="text-gray-400" />
@@ -197,11 +197,11 @@ export function Home() {
                             </TabsTrigger> */}
                         </TabsList>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col mt-6">
                         <Button
                             onClick={generatePDF}
-                            size={"icon"}
                         >
+                            Baixar
                             <FileText />
                         </Button>
                         <div className="flex justify-start my-6">
