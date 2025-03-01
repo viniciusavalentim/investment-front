@@ -20,7 +20,7 @@ export type ApiResponse = {
 };
 
 export type stock = {
-    _id: string;
+    id: string;
     data: StockInfo[];
     createdAt: string;
 };

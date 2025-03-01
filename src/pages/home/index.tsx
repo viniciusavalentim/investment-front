@@ -3,7 +3,7 @@ import { FindStocks, StockInfo } from "@/api/find-stocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatApiResponse } from "@/utils/format";
+import { formatApiFormulaMagica, formatApiResponse, formatApiSomenteEy } from "@/utils/format";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, FileText, Loader2, RotateCw, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -14,7 +14,7 @@ import { FindAllStocks } from "@/api/find-stocks-db";
 import { useNavigate } from "react-router-dom";
 
 
-export function formatDate(dateString: string): string {
+function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -25,7 +25,7 @@ export function formatDate(dateString: string): string {
     return `${day}/${month}/${year} às ${hours}:${minutes}`;
 }
 
-export const generateCurrentDate = () => {
+const generateCurrentDate = () => {
     const today = new Date();
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -138,6 +138,9 @@ export function Home() {
 
     useEffect(() => {
         if (findLatestStock?.data) {
+            const jsonString = JSON.stringify(findLatestStock);
+            const sizeInBytes = new Blob([jsonString]).size;
+            console.log("Size in bytes: ", sizeInBytes);    
             setFilteredData(findLatestStock.data);
         }
     }, [findLatestStock])
@@ -179,10 +182,12 @@ export function Home() {
 
                 <Tabs defaultValue="table" className="w-full">
                     <div className="grid grid-cols-1 lg:flex items-center justify-between">
-                        <TabsList className="grid grid-cols-3 lg:w-1/2">
-                            <TabsTrigger value="table">Tabela</TabsTrigger>
+                        <TabsList className="">
+                           {/*  <TabsTrigger value="table">Tabela</TabsTrigger> */}
+                            <TabsTrigger value="peq">PEQ</TabsTrigger>
+                            <TabsTrigger value="fm">Formulá mágica</TabsTrigger>
+                            <TabsTrigger value="ey">Earnings Yield</TabsTrigger>
                             <TabsTrigger value="ddd">Todas as Atualizações</TabsTrigger>
-                            <TabsTrigger value="cards">Cartões</TabsTrigger>
                         </TabsList>
                         <div className="flex items-center gap-2">
                             <Button
@@ -211,10 +216,10 @@ export function Home() {
                                     <th className="border border-zinc-800 p-2 w-[150px]">Posição</th>
                                     <th className="border border-zinc-800 p-2 w-[150px]">Ticker</th>
                                     <th className="border border-zinc-800 p-2">Cotação</th>
+                                    <th className="border border-zinc-800 p-2">DY</th>
                                     <th className="border border-zinc-800 p-2">P/L</th>
                                     <th className="border border-zinc-800 p-2">P/VP</th>
-                                    <th className="border border-zinc-800 p-2">ROE</th>
-                                    <th className="border border-zinc-800 p-2">DY</th>
+                                    {/* <th className="border border-zinc-800 p-2">ROE</th> */}
                                     <th className="border border-zinc-800 p-2">EV/EBIT</th>
                                     <th className="border border-zinc-800 p-2">ROIC</th>
                                     <th className="border border-zinc-800 p-2">EY</th>
@@ -240,10 +245,10 @@ export function Home() {
                                                     {stock.tag}
                                                 </td>
                                                 <td className="border border-zinc-800 p-2">{stock.cotacao}</td>
+                                                <td className="border border-zinc-800 p-2">{dividendYield}</td>
                                                 <td className="border border-zinc-800 p-2">{stock.indicators["P/L"]}</td>
                                                 <td className="border border-zinc-800 p-2">{stock.indicators["P/VP"]}</td>
-                                                <td className="border border-zinc-800 p-2">{stock.indicators["ROE"]}</td>
-                                                <td className="border border-zinc-800 p-2">{dividendYield}</td>
+                                                {/* <td className="border border-zinc-800 p-2">{stock.indicators["ROE"]}</td> */}
                                                 <td className="border border-zinc-800 p-2">{stock.indicators["EV/EBIT"]}</td>
                                                 <td className="border border-zinc-800 p-2">{stock.indicators["ROIC"]}</td>
                                                 <td className="border border-zinc-800 p-2"> {(1 / parseFloat(stock.indicators["EV/EBIT"].replace(",", ".")) * 100).toFixed(1)}</td>
@@ -265,9 +270,57 @@ export function Home() {
                             </tbody>
                         </table>
                     </TabsContent>
-                    <TabsContent value="cards">
+                    <TabsContent value="peq">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {formatApiResponse(filteredData).map((stock, index) => (
+                                <div key={index} className="bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <img src={stock.logo || "/placeholder.svg"} alt={stock.tag} className="h-8 w-8" />
+                                            <span className="font-bold text-lg">{stock.tag}</span>
+                                        </div>
+                                        <span className="text-sm text-gray-400">#{index + 1}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-sm">
+                                        <div>Cotação: {stock.cotacao}</div>
+                                        <div>P/L: {stock.indicators["P/L"]}</div>
+                                        <div>P/VP: {stock.indicators["P/VP"]}</div>
+                                        <div>ROE: {stock.indicators["ROE"]}</div>
+                                        <div>ROIC: {stock.indicators["ROIC"]}</div>
+                                        <div>EV/EBIT: {stock.indicators["EV/EBIT"]}</div>
+                                    </div>
+                                    <div className="mt-2 text-center font-bold">Total de Pontos: {stock.soma_pontos}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="fm">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {formatApiFormulaMagica(filteredData).map((stock, index) => (
+                                <div key={index} className="bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <img src={stock.logo || "/placeholder.svg"} alt={stock.tag} className="h-8 w-8" />
+                                            <span className="font-bold text-lg">{stock.tag}</span>
+                                        </div>
+                                        <span className="text-sm text-gray-400">#{index + 1}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-sm">
+                                        <div>Cotação: {stock.cotacao}</div>
+                                        <div>P/L: {stock.indicators["P/L"]}</div>
+                                        <div>P/VP: {stock.indicators["P/VP"]}</div>
+                                        <div>ROE: {stock.indicators["ROE"]}</div>
+                                        <div>ROIC: {stock.indicators["ROIC"]}</div>
+                                        <div>EV/EBIT: {stock.indicators["EV/EBIT"]}</div>
+                                    </div>
+                                    <div className="mt-2 text-center font-bold">Total de Pontos: {stock.soma_pontos}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="ey">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {formatApiSomenteEy(filteredData).map((stock, index) => (
                                 <div key={index} className="bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-lg p-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">
@@ -292,7 +345,7 @@ export function Home() {
                     <TabsContent value="ddd">
                         <div className="space-y-3">
                             {findAllStocks && findAllStocks.stocks && findAllStocks.stocks.map((obj) => (
-                                <div className="w-full bg-zinc-900 flex justify-between items-center rounded-lg p-6">
+                                <div key={obj.id + "atualizações"} className="w-full bg-zinc-900 flex justify-between items-center rounded-lg p-6">
                                     <div className="flex gap-6 items-center">
                                         <div className="w-3 h-3 bg-violet-600 rounded-full"></div>
                                         <span className="font-bold text-zinc-100">
@@ -300,7 +353,7 @@ export function Home() {
                                         </span>
                                     </div>
                                     <div>
-                                        <Button size={'icon'} onClick={() => navigate(`/${obj._id}`)}><ArrowRight /></Button>
+                                        <Button size={'icon'} onClick={() => navigate(`/${obj.id}`)}><ArrowRight /></Button>
                                     </div>
                                 </div>
                             ))}

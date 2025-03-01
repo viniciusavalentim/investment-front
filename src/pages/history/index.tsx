@@ -3,11 +3,24 @@ import { formatApiResponse } from "@/utils/format";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, FileText } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom"
-import { formatDate } from "../home";
 import { useRef } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/button";
+
+
+function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+}
+
+
 
 export function History() {
 
