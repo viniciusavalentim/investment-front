@@ -140,7 +140,7 @@ export function Home() {
         if (findLatestStock?.data) {
             const jsonString = JSON.stringify(findLatestStock);
             const sizeInBytes = new Blob([jsonString]).size;
-            console.log("Size in bytes: ", sizeInBytes);    
+            console.log("Size in bytes: ", sizeInBytes);
             setFilteredData(findLatestStock.data);
         }
     }, [findLatestStock])
@@ -180,31 +180,38 @@ export function Home() {
                     />
                 </div>
 
-                <Tabs defaultValue="table" className="w-full">
+                <Tabs defaultValue="peq" className="w-full">
                     <div className="grid grid-cols-1 lg:flex items-center justify-between">
-                        <TabsList className="">
-                           {/*  <TabsTrigger value="table">Tabela</TabsTrigger> */}
-                            <TabsTrigger value="peq">PEQ</TabsTrigger>
-                            <TabsTrigger value="fm">Formulá mágica</TabsTrigger>
-                            <TabsTrigger value="ey">Earnings Yield</TabsTrigger>
-                            <TabsTrigger value="ddd">Todas as Atualizações</TabsTrigger>
+                        <TabsList className="w-full flex flex-wrap justify-center sm:justify-start gap-1 sm:gap-2 p-1">
+                            <TabsTrigger value="peq" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
+                                PEQ
+                            </TabsTrigger>
+                            <TabsTrigger value="fm" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
+                                Formulá mágica
+                            </TabsTrigger>
+                            <TabsTrigger value="ey" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
+                                Earnings Yield
+                            </TabsTrigger>
+                            {/* <TabsTrigger value="ddd" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
+                                Todas as Atualizações
+                            </TabsTrigger> */}
                         </TabsList>
-                        <div className="flex items-center gap-2">
-                            <Button
-                                onClick={generatePDF}
-                                size={"icon"}
-                            >
-                                <FileText />
-                            </Button>
-                            <div className="flex justify-start my-6">
-                                <div className="p-3 border border-zinc-800 bg-zinc-900 w-full lg:w-46">
-                                    <h1 className="text-sm text-zinc-50">
-                                        Data da ultima atualização:
-                                        <span className="font-bold ml-2">
-                                            {findLatestStock?.createdAt && formatDate(findLatestStock?.createdAt)}
-                                        </span>
-                                    </h1>
-                                </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            onClick={generatePDF}
+                            size={"icon"}
+                        >
+                            <FileText />
+                        </Button>
+                        <div className="flex justify-start my-6">
+                            <div className="p-3 border border-zinc-800 bg-zinc-900 w-full lg:w-46">
+                                <h1 className="text-sm text-zinc-50">
+                                    Data da ultima atualização:
+                                    <span className="font-bold ml-2">
+                                        {findLatestStock?.createdAt && formatDate(findLatestStock?.createdAt)}
+                                    </span>
+                                </h1>
                             </div>
                         </div>
                     </div>
