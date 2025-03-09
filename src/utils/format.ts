@@ -108,7 +108,7 @@ export function formatApiSomenteEy(data: StockInfo[]): StockInfo[] {
         .map((item, index) => ({ ...item, pontos_ey: index + 1 }));
 
     const finalData = dataWithEyPoints.map(item => {
-        const soma_pontos = (item.pontos_roic || 0);
+        const soma_pontos = (item.pontos_ey || 0);
         return { ...item, soma_pontos };
     }).sort((a, b) => a.soma_pontos - b.soma_pontos);
 
