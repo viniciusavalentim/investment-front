@@ -3,7 +3,7 @@ import { FindStocks, StockInfo } from "@/api/find-stocks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatApiFormulaMagica, formatApiResponse, formatApiSomenteEy } from "@/utils/format";
+import { formatApiFormulaMagica, formatApiResponse, formatApiRoic, formatApiSomenteEy } from "@/utils/format";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, FileText, Loader2, RotateCw, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -192,6 +192,9 @@ export function Home() {
                             <TabsTrigger value="ey" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
                                 Earnings Yield
                             </TabsTrigger>
+                            <TabsTrigger value="roic" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
+                                Roic
+                            </TabsTrigger>
                             {/* <TabsTrigger value="ddd" className="flex-1 sm:flex-none text-xs sm:text-sm py-1.5 px-2 sm:px-3">
                                 Todas as Atualizações
                             </TabsTrigger> */}
@@ -328,6 +331,30 @@ export function Home() {
                     <TabsContent value="ey">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {formatApiSomenteEy(filteredData).map((stock, index) => (
+                                <div key={index} className="bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                            <img src={stock.logo || "/placeholder.svg"} alt={stock.tag} className="h-8 w-8" />
+                                            <span className="font-bold text-lg">{stock.tag}</span>
+                                        </div>
+                                        <span className="text-sm text-gray-400">#{index + 1}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2 text-sm">
+                                        <div>Cotação: {stock.cotacao}</div>
+                                        <div>P/L: {stock.indicators["P/L"]}</div>
+                                        <div>P/VP: {stock.indicators["P/VP"]}</div>
+                                        <div>ROE: {stock.indicators["ROE"]}</div>
+                                        <div>ROIC: {stock.indicators["ROIC"]}</div>
+                                        <div>EV/EBIT: {stock.indicators["EV/EBIT"]}</div>
+                                    </div>
+                                    <div className="mt-2 text-center font-bold">Total de Pontos: {stock.soma_pontos}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="roic">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {formatApiRoic(filteredData).map((stock, index) => (
                                 <div key={index} className="bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-lg p-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-2">

@@ -99,6 +99,23 @@ export function formatApiFormulaMagica(data: StockInfo[]): StockInfo[] {
 }
 
 export function formatApiSomenteEy(data: StockInfo[]): StockInfo[] {
+    // 2. Calcular os pontos para 'pontos_ey'
+    const dataWithEyPoints = data.map(item => {
+        const evEbit = parseFloat(item.indicators["EV/EBIT"]);
+        const ey = 1 / evEbit * 100;
+        return { ...item, ey };
+    }).sort((a, b) => b.ey - a.ey)
+        .map((item, index) => ({ ...item, pontos_ey: index + 1 }));
+
+    const finalData = dataWithEyPoints.map(item => {
+        const soma_pontos = (item.pontos_roic || 0);
+        return { ...item, soma_pontos };
+    }).sort((a, b) => a.soma_pontos - b.soma_pontos);
+
+    return finalData;
+}
+
+export function formatApiRoic(data: StockInfo[]): StockInfo[] {
     const dataWithRoicPoints = [...data].map((item) => {
         const roic = parseFloat(item.indicators.ROIC.replace('%', '').trim());
         return { ...item, roic };
